@@ -11,11 +11,11 @@ export function ForgotPassword() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
 
-    const user = findUserByEmail(email);
+    const user = await findUserByEmail(email);
     if (!user) {
       setErrorMessage("Não encontramos uma conta com este e-mail.");
       return;

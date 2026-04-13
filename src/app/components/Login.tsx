@@ -15,12 +15,12 @@ export function Login() {
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
     setSuccessMessage("");
 
-    const result = loginUser(email, password);
+    const result = await loginUser(email, password);
     if (!result.ok) {
       setErrorMessage(result.error);
       return;

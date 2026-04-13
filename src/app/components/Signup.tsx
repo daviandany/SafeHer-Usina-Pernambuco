@@ -40,7 +40,7 @@ export function Signup() {
     setFormData((prev) => ({ ...prev, cpf: formatted }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
     setSuccessMessage("");
@@ -50,7 +50,7 @@ export function Signup() {
       return;
     }
 
-    const result = registerUser(formData);
+    const result = await registerUser(formData);
     if (!result.ok) {
       setErrorMessage(result.error);
       return;
