@@ -1,175 +1,187 @@
-import { useEffect, useMemo, useState } from "react";
-import { BellRing, MapPin, ShieldCheck, Siren, Timer, UserCheck } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  MessageCircle,
+  SquareCheck,
+  FileText,
+  Clock3,
+  PenTool,
+  PanelTop,
+  Sparkles,
+  FormInput,
+  Orbit,
+} from "lucide-react";
 
-const demoSteps = [
+const modules = [
+  { id: "documentos", label: "Documentos", icon: FileText },
+  { id: "tempo", label: "Rastreamento de tempo", icon: Clock3 },
+  { id: "chat", label: "Chat", icon: MessageCircle },
+  { id: "whiteboards", label: "Whiteboards", icon: PenTool },
+  { id: "projetos", label: "Projetos", icon: SquareCheck },
+  { id: "paineis", label: "Painéis", icon: PanelTop },
+  { id: "ia", label: "IA", icon: Sparkles },
+  { id: "formularios", label: "Formulários", icon: FormInput },
+  { id: "sprints", label: "Sprints", icon: Orbit },
+] as const;
+
+const scenes = [
   {
-    id: "alerta",
-    title: "1. Alerta rápido em 1 clique",
-    short: "Botão SOS",
-    description:
-      "Ao perceber risco, a usuária aciona o botão SOS e a central recebe localização, nível de urgência e dados essenciais em segundos.",
-    icon: BellRing,
-    color: "from-fuchsia-500 to-purple-600",
-    eta: "00:05s",
-    status: "Sinal enviado",
+    moduleId: "projetos",
+    hint: "Atualizando status da tarefa",
+    content: (
+      <div className="grid gap-3 text-sm text-gray-700">
+        {[
+          ["Finalize campaign brief", "High", "Dec 6"],
+          ["Audience & market research", "Urgent", "Jan 1"],
+          ["Confirm budgets", "Low", "Dec 25"],
+          ["Define channel strategy", "Low", "Jan 6"],
+          ["Schedule kickoff meeting", "High", "May 5"],
+        ].map(([task, priority, date], index) => (
+          <div
+            key={task}
+            className={`grid grid-cols-[1fr_auto_auto] gap-3 rounded-xl border px-3 py-2 ${
+              index === 3 ? "border-fuchsia-300 bg-fuchsia-50/80" : "border-gray-100 bg-white"
+            }`}
+          >
+            <span>{task}</span>
+            <span className="text-gray-500">{priority}</span>
+            <span className="text-gray-400">{date}</span>
+          </div>
+        ))}
+      </div>
+    ),
   },
   {
-    id: "localizacao",
-    title: "2. Rastreamento inteligente",
-    short: "Localização ativa",
-    description:
-      "A SafeHer atualiza rota em tempo real e identifica movimentações suspeitas para apoiar ações preventivas da equipe.",
-    icon: MapPin,
-    color: "from-sky-500 to-indigo-600",
-    eta: "00:12s",
-    status: "Rota monitorada",
+    moduleId: "chat",
+    hint: "Adicionando comentário",
+    content: (
+      <div className="rounded-2xl border border-gray-200 bg-white p-4">
+        <p className="font-semibold text-gray-900 mb-3"># marketing</p>
+        <div className="space-y-3 text-sm text-gray-700">
+          <div className="rounded-xl bg-gray-50 p-3">Need to create tasks for this sprint today.</div>
+          <div className="rounded-xl bg-gray-50 p-3">Works for me. Thanks!</div>
+          <div className="rounded-xl border border-fuchsia-300 bg-fuchsia-50 p-3 text-fuchsia-700 font-medium">
+            Adding a comment...
+          </div>
+        </div>
+        <div className="mt-4 rounded-xl border border-gray-200 px-3 py-2 text-gray-400">Comentar...</div>
+      </div>
+    ),
   },
   {
-    id: "resposta",
-    title: "3. Resposta coordenada",
-    short: "Rede de apoio",
-    description:
-      "Responsáveis e equipe de suporte recebem o alerta com instruções claras, reduzindo o tempo de reação em situações críticas.",
-    icon: ShieldCheck,
-    color: "from-emerald-500 to-teal-600",
-    eta: "00:20s",
-    status: "Apoio acionado",
+    moduleId: "tempo",
+    hint: "Rastreamento ativo",
+    content: (
+      <div className="grid gap-3 text-sm text-gray-700">
+        {[
+          ["Marketing planning", "02:13:20", "Running"],
+          ["Research review", "00:47:15", "Paused"],
+          ["Meeting prep", "01:08:02", "Done"],
+        ].map(([task, tracked, status], index) => (
+          <div
+            key={task}
+            className={`grid grid-cols-[1fr_auto_auto] gap-3 rounded-xl border px-3 py-2 ${
+              index === 0 ? "border-indigo-300 bg-indigo-50/70" : "border-gray-100 bg-white"
+            }`}
+          >
+            <span>{task}</span>
+            <span className="font-medium">{tracked}</span>
+            <span className="text-gray-500">{status}</span>
+          </div>
+        ))}
+      </div>
+    ),
   },
 ] as const;
 
 export function InteractivePreviewSection() {
-  const [activeStep, setActiveStep] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [activeScene, setActiveScene] = useState(0);
+  const [autoPlay, setAutoPlay] = useState(true);
 
   useEffect(() => {
-    if (!isAutoPlaying) return;
-
+    if (!autoPlay) return;
     const timer = window.setInterval(() => {
-      setActiveStep((prev) => (prev + 1) % demoSteps.length);
-    }, 4500);
+      setActiveScene((prev) => (prev + 1) % scenes.length);
+    }, 3500);
 
     return () => window.clearInterval(timer);
-  }, [isAutoPlaying]);
+  }, [autoPlay]);
 
-  const currentStep = demoSteps[activeStep];
-  const completion = useMemo(() => ((activeStep + 1) / demoSteps.length) * 100, [activeStep]);
+  const current = scenes[activeScene];
 
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white via-purple-50/50 to-white">
+    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white via-purple-50/40 to-white">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-14">
-          <p className="inline-flex items-center rounded-full bg-purple-100 px-4 py-1 text-sm font-medium text-purple-700 mb-4">
-            Pré-demonstração interativa
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            Veja como a SafeHer protege você em tempo real
-          </h2>
+        <div className="text-center mb-10">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Pré-demonstração do sistema em uso</h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Explore o fluxo completo da solução: do pedido de ajuda ao acionamento da rede de apoio.
-            Simples de entender, rápido de agir e pensado para o público feminino.
+            A interface muda sozinha entre módulos reais para mostrar exatamente como a solução funciona no dia a dia.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-10 items-stretch">
-          <div className="space-y-4">
-            {demoSteps.map((step, index) => {
-              const Icon = step.icon;
-              const isActive = index === activeStep;
-
+        <div className="rounded-[28px] border border-fuchsia-200 bg-white shadow-2xl shadow-purple-100/70 p-4 sm:p-6">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 border-b border-purple-100 pb-4 mb-4">
+            {modules.map((module) => {
+              const Icon = module.icon;
+              const isActive = current.moduleId === module.id;
               return (
                 <button
-                  key={step.id}
+                  key={module.id}
                   type="button"
-                  onMouseEnter={() => setIsAutoPlaying(false)}
-                  onFocus={() => setIsAutoPlaying(false)}
-                  onClick={() => setActiveStep(index)}
-                  className={`w-full text-left rounded-3xl border p-6 transition-all duration-300 ${
+                  onMouseEnter={() => setAutoPlay(false)}
+                  onFocus={() => setAutoPlay(false)}
+                  onClick={() => {
+                    const sceneIndex = scenes.findIndex((scene) => scene.moduleId === module.id);
+                    if (sceneIndex !== -1) setActiveScene(sceneIndex);
+                  }}
+                  className={`flex items-center gap-2 rounded-2xl px-3 py-2 text-sm transition-all ${
                     isActive
-                      ? "border-purple-300 bg-white shadow-xl shadow-purple-100/80 scale-[1.01]"
-                      : "border-purple-100 bg-white/80 hover:border-purple-200 hover:shadow-md"
+                      ? "bg-[#241a58] text-white shadow-lg"
+                      : "bg-purple-50 text-purple-700 hover:bg-purple-100"
                   }`}
                 >
-                  <div className="flex items-start gap-4">
-                    <div
-                      className={`rounded-2xl p-3 text-white bg-gradient-to-br ${step.color} ${
-                        isActive ? "shadow-lg" : "opacity-85"
-                      }`}
-                    >
-                      <Icon className="w-6 h-6" />
-                    </div>
-
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between gap-4">
-                        <h3 className="text-lg font-semibold text-gray-900">{step.title}</h3>
-                        <span className="text-xs font-semibold text-purple-600 bg-purple-100 px-3 py-1 rounded-full">
-                          {step.eta}
-                        </span>
-                      </div>
-                      <p className="text-gray-600 mt-2 leading-relaxed">{step.description}</p>
-                    </div>
-                  </div>
+                  <Icon className="w-4 h-4" />
+                  <span className="hidden sm:inline">{module.label}</span>
                 </button>
               );
             })}
           </div>
 
-          <div className="relative rounded-3xl border border-purple-200 bg-white p-6 sm:p-8 shadow-2xl shadow-purple-100/70 overflow-hidden">
-            <div className="absolute inset-0 pointer-events-none opacity-70">
-              <div className={`absolute -top-24 -right-20 h-56 w-56 rounded-full blur-3xl bg-gradient-to-br ${currentStep.color}`} />
-              <div className="absolute -bottom-16 -left-14 h-44 w-44 rounded-full blur-3xl bg-purple-200" />
-            </div>
+          <div className="grid lg:grid-cols-[220px_1fr] gap-4">
+            <aside className="rounded-2xl border border-gray-100 bg-gray-50 p-3 text-sm text-gray-600">
+              <p className="font-semibold text-gray-900 mb-3">Acme Inc.</p>
+              <div className="space-y-2">
+                <div className="rounded-lg bg-white px-3 py-2">Home</div>
+                <div className="rounded-lg bg-white px-3 py-2">Inbox</div>
+                <div className="rounded-lg bg-white px-3 py-2">More</div>
+              </div>
+              <p className="font-medium text-gray-500 mt-5 mb-2">Spaces</p>
+              <div className="space-y-2">
+                <div className="rounded-lg bg-purple-100 px-3 py-2 text-purple-700">Marketing</div>
+                <div className="rounded-lg bg-white px-3 py-2">Campaigns</div>
+                <div className="rounded-lg bg-white px-3 py-2">Content</div>
+              </div>
+            </aside>
 
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-6">
-                <span className="text-sm font-medium text-gray-500">Painel de Operações SafeHer</span>
+            <div className="rounded-2xl border border-gray-100 bg-white p-4 sm:p-5">
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                <div className="flex items-center gap-2 text-sm text-gray-500">
+                  <span>List</span>
+                  <span>Board</span>
+                  <span>Calendar</span>
+                </div>
                 <button
                   type="button"
-                  onClick={() => setIsAutoPlaying((value) => !value)}
-                  className="text-sm font-semibold text-purple-700 hover:text-purple-800"
+                  onClick={() => setAutoPlay((value) => !value)}
+                  className="text-sm text-purple-700 font-semibold"
                 >
-                  {isAutoPlaying ? "Pausar animação" : "Reproduzir animação"}
+                  {autoPlay ? "Pausar" : "Reproduzir"}
                 </button>
               </div>
 
-              <div className="rounded-2xl border border-white/60 bg-white/80 backdrop-blur p-5 mb-5">
-                <div className="flex items-center justify-between mb-3">
-                  <p className="text-sm font-medium text-gray-500">Etapa ativa</p>
-                  <span className="text-xs px-3 py-1 rounded-full bg-green-100 text-green-700 font-semibold">
-                    {currentStep.status}
-                  </span>
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">{currentStep.short}</h3>
-                <p className="text-gray-600">{currentStep.description}</p>
-              </div>
+              {current.content}
 
-              <div className="grid grid-cols-3 gap-3 mb-6">
-                {[
-                  { label: "Central", value: "Online", icon: Siren },
-                  { label: "Tempo médio", value: "< 30s", icon: Timer },
-                  { label: "Apoio", value: "Confirmado", icon: UserCheck },
-                ].map((item) => {
-                  const ItemIcon = item.icon;
-                  return (
-                    <div key={item.label} className="rounded-2xl bg-gray-50 border border-gray-100 p-3">
-                      <ItemIcon className="w-4 h-4 text-purple-600 mb-2" />
-                      <p className="text-xs text-gray-500">{item.label}</p>
-                      <p className="font-semibold text-gray-900 text-sm">{item.value}</p>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div>
-                <div className="flex justify-between text-xs text-gray-500 mb-2">
-                  <span>Progresso da simulação</span>
-                  <span>{Math.round(completion)}%</span>
-                </div>
-                <div className="h-2 rounded-full bg-purple-100 overflow-hidden">
-                  <div
-                    className={`h-full rounded-full bg-gradient-to-r ${currentStep.color} transition-all duration-700`}
-                    style={{ width: `${completion}%` }}
-                  />
-                </div>
+              <div className="mt-4 inline-flex items-center rounded-full bg-fuchsia-600 px-4 py-1 text-sm font-semibold text-white shadow-lg shadow-fuchsia-200">
+                {current.hint}
               </div>
             </div>
           </div>
