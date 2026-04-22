@@ -17,12 +17,12 @@ export function CTASection() {
             </div>
 
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-              Pronta Para Se Sentir Mais Segura?
+              Quer mais segurança no seu dia a dia?
             </h2>
             
             <p className="text-lg text-purple-100 mb-8 max-w-2xl mx-auto">
-              Junte-se a milhares de mulheres que já estão usando o SafeHer 
-              para viver com mais confiança e tranquilidade.
+              O SafeHer é gratuito e foi criado para ajudar mulheres.
+              Tenha acesso rápido a ajuda, orientação e recursos de proteção.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -35,7 +35,7 @@ export function CTASection() {
               <Link to="/login">
                 <Button 
                   variant="outline" 
-                  className="border-2 border-white text-white hover:bg-white/10 rounded-full px-8 py-6 text-lg"
+                  className="border-2 border-white/90 !bg-transparent text-white hover:!bg-white hover:text-purple-700 rounded-full px-8 py-6 text-lg transition-all duration-300"
                 >
                   Saiba Mais
                 </Button>
@@ -43,7 +43,7 @@ export function CTASection() {
             </div>
 
             <p className="text-sm text-purple-100 mt-6">
-              ✓ Grátis para começar • ✓ Sem cartão de crédito • ✓ Privacidade garantida
+              ✓ Feito para ajudá-las • ✓ Apoio rápido • ✓ Privacidade garantida
             </p>
           </div>
         </div>
